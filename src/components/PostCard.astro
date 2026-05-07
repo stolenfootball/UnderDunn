@@ -1,0 +1,42 @@
+---
+import { formatDate } from '../lib/utils';
+
+interface Props {
+  title: string;
+  description?: string;
+  date: Date;
+  section: string;
+  sectionLabel: string;
+  slug: string;
+  tags?: string[];
+  readTime?: number;
+}
+
+const { title, description, date, section, sectionLabel, slug, tags = [], readTime } = Astro.props;
+---
+<article class="group">
+  <a href={`/${section}/${slug}`} class="block p-4 -mx-4 rounded-lg hover:bg-surface dark:hover:bg-surface-dark transition-colors">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-xs font-medium text-accent bg-surface dark:bg-surface-dark px-2 py-0.5 rounded">
+        {sectionLabel}
+      </span>
+      <span class="text-xs text-muted dark:text-muted-dark">{formatDate(date)}</span>
+      {readTime && <span class="text-xs text-muted dark:text-muted-dark">&middot; {readTime} min read</span>}
+    </div>
+    <h3 class="font-serif text-lg font-semibold text-charcoal dark:text-warm-light group-hover:text-accent transition-colors">
+      {title}
+    </h3>
+    {description && (
+      <p class="mt-1 text-sm text-muted dark:text-muted-dark line-clamp-2">{description}</p>
+    )}
+    {tags.length > 0 && (
+      <div class="mt-2 flex flex-wrap gap-1">
+        {tags.map(tag => (
+          <span class="text-xs text-muted dark:text-muted-dark bg-surface dark:bg-surface-dark px-1.5 py-0.5 rounded">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </a>
+</article>
