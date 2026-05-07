@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { sectionMeta, estimateReadTime } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const sections = ['writeups', 'research', 'series', 'personal'] as const;
+  return sections.map(section => ({ params: { section } }));
+}
+
+const { section } = Astro.params;
+const meta = sectionMeta[section] ?? { label: section, description: '' };
+const allPosts = await getCollection(section, ({ data }) => !data.draft);
+
+let posts;
+let seriesGroups: Map<string, { count: number; firstPost: any }> | null = null;
+
+if (section === 'series') {
+  const seriesPosts = allPosts as any[];
+  const sorted = seriesPosts.sort((a, b) => {
+    if (a.data.series !== b.data.series) return a.data.series.localeCompare(b.data.series);
+    return a.data.order - b.data.order;
+  });
+
+  seriesGroups = new Map();
+  for (const post of sorted) {
+    const name = post.data.series;
+    if (!seriesGroups.has(name)) {
+      seriesGroups.set(name, { count: 0, firstPost: post });
+    }
+    seriesGroups.get(name)!.count++;
+  }
+
+  posts = sorted;
+} else {
+  posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+}
+---
+<BaseLayout title={meta.label} description={meta.description}>
+  <main class="flex-1 max-w-3xl mx-auto px-4 py-12 w-full">
+    <div class="mb-8">
+      <h1 class="font-serif text-3xl font-bold text-charcoal dark:text-warm-light">{meta.label}</h1>
+      <p class="mt-2 text-muted dark:text-muted-dark">{meta.description}</p>
+    </div>
+
+    {section === 'series' && seriesGroups ? (
+      <div class="space-y-10">
+        {[...seriesGroups.entries()].map(([seriesName, { count, firstPost }]) => {
+          const seriesPosts = posts!.filter(p => p.data.series === seriesName);
+          const displayName = seriesName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          return (
+            <section>
+              <h2 class="font-serif text-xl font-semibold text-charcoal dark:text-warm-light mb-1">
+                {displayName}
+              </h2>
+              <p class="text-sm text-muted dark:text-muted-dark mb-4">{count} parts</p>
+              <div class="space-y-1">
+                {seriesPosts.map(post => (
+                  <PostCard
+                    title={post.data.title}
+                    description={post.data.description}
+                    date={post.data.date}
+                    section="series"
+                    sectionLabel={`Part ${post.data.order}`}
+                    slug={post.id}
+                    tags={post.data.tags}
+                  />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="space-y-1">
+        {posts.map(post => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.date}
+            section={section}
+            sectionLabel={meta.label}
+            slug={post.id}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+    )}
+
+    {posts.length === 0 && (
+      <p class="text-muted dark:text-muted-dark italic">No posts yet. Check back soon!</p>
+    )}
+  </main>
+</BaseLayout>
