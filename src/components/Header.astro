@@ -1,0 +1,112 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const sections = [
+  { name: 'Writeups', path: '/writeups' },
+  { name: 'Research', path: '/research' },
+  { name: 'Series', path: '/series' },
+  { name: 'Personal', path: '/personal' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+<header class="border-b border-border dark:border-border-dark">
+  <nav class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="/" class="font-serif text-xl font-bold text-accent hover:text-accent-hover transition-colors">
+      UnderDunn
+    </a>
+
+    <div class="flex items-center gap-6">
+      <ul class="hidden md:flex items-center gap-4 text-sm">
+        {sections.map(({ name, path }) => (
+          <li>
+            <a
+              href={path}
+              class:list={[
+                'transition-colors',
+                currentPath.startsWith(path)
+                  ? 'text-accent font-medium'
+                  : 'text-muted dark:text-muted-dark hover:text-charcoal dark:hover:text-warm-light',
+              ]}
+            >
+              {name}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a
+            href="/about"
+            class:list={[
+              'transition-colors',
+              currentPath === '/about'
+                ? 'text-accent font-medium'
+                : 'text-muted dark:text-muted-dark hover:text-charcoal dark:hover:text-warm-light',
+            ]}
+          >
+            About
+          </a>
+        </li>
+      </ul>
+
+      <button
+        id="search-trigger"
+        type="button"
+        aria-label="Search"
+        class="p-2 text-muted hover:text-accent transition-colors cursor-pointer"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+
+      <ThemeToggle />
+
+      <button
+        id="mobile-menu-toggle"
+        type="button"
+        aria-label="Toggle menu"
+        class="md:hidden p-2 text-muted hover:text-accent transition-colors cursor-pointer"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t border-border dark:border-border-dark px-4 py-3">
+    <ul class="flex flex-col gap-2 text-sm">
+      {sections.map(({ name, path }) => (
+        <li>
+          <a
+            href={path}
+            class:list={[
+              'block py-1 transition-colors',
+              currentPath.startsWith(path)
+                ? 'text-accent font-medium'
+                : 'text-muted dark:text-muted-dark hover:text-charcoal dark:hover:text-warm-light',
+            ]}
+          >
+            {name}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href="/about" class="block py-1 text-muted dark:text-muted-dark hover:text-charcoal dark:hover:text-warm-light transition-colors">
+          About
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  function initMobileMenu() {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    if (!toggle || !menu) return;
+    toggle.addEventListener('click', () => menu.classList.toggle('hidden'));
+  }
+  initMobileMenu();
+  document.addEventListener('astro:after-swap', initMobileMenu);
+</script>
