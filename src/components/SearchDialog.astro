@@ -1,0 +1,71 @@
+---
+---
+<div id="search-overlay" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+  <div class="max-w-2xl mx-auto mt-20 px-4">
+    <div class="bg-cream dark:bg-cream-dark rounded-lg shadow-xl border border-border dark:border-border-dark overflow-hidden">
+      <div id="pagefind-container" class="p-4"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initSearch() {
+    const overlay = document.getElementById('search-overlay');
+    const trigger = document.getElementById('search-trigger');
+    const container = document.getElementById('pagefind-container');
+    if (!overlay || !trigger || !container) return;
+
+    let loaded = false;
+
+    function openSearch() {
+      overlay!.classList.remove('hidden');
+      if (!loaded) {
+        loaded = true;
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/pagefind/pagefind-ui.css';
+        document.head.appendChild(link);
+
+        const script = document.createElement('script');
+        script.src = '/pagefind/pagefind-ui.js';
+        script.onload = () => {
+          // @ts-ignore
+          new PagefindUI({
+            element: '#pagefind-container',
+            showSubResults: true,
+            showImages: false,
+          });
+          setTimeout(() => {
+            const input = container!.querySelector<HTMLInputElement>('input');
+            input?.focus();
+          }, 100);
+        };
+        document.head.appendChild(script);
+      } else {
+        setTimeout(() => {
+          const input = container!.querySelector<HTMLInputElement>('input');
+          input?.focus();
+        }, 50);
+      }
+    }
+
+    function closeSearch() {
+      overlay!.classList.add('hidden');
+    }
+
+    trigger.addEventListener('click', openSearch);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeSearch();
+    });
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openSearch();
+      }
+      if (e.key === 'Escape') closeSearch();
+    });
+  }
+
+  initSearch();
+  document.addEventListener('astro:after-swap', initSearch);
+</script>
