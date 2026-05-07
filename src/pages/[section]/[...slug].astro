@@ -1,0 +1,71 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { sectionMeta, estimateReadTime } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const sections = ['writeups', 'research', 'series', 'personal'] as const;
+  const paths = [];
+
+  for (const section of sections) {
+    const posts = await getCollection(section, ({ data }) => !data.draft);
+
+    if (section === 'series') {
+      const sorted = (posts as any[]).sort((a, b) => a.data.order - b.data.order);
+      const bySeries = new Map<string, typeof sorted>();
+      for (const post of sorted) {
+        const name = post.data.series;
+        if (!bySeries.has(name)) bySeries.set(name, []);
+        bySeries.get(name)!.push(post);
+      }
+
+      for (const post of sorted) {
+        const seriesPosts = bySeries.get(post.data.series)!;
+        const idx = seriesPosts.findIndex(p => p.id === post.id);
+        paths.push({
+          params: { section, slug: post.id },
+          props: {
+            post,
+            section,
+            seriesInfo: {
+              name: post.data.series,
+              order: post.data.order,
+              total: seriesPosts.length,
+              prev: idx > 0 ? { title: seriesPosts[idx - 1].data.title, slug: seriesPosts[idx - 1].id } : undefined,
+              next: idx < seriesPosts.length - 1 ? { title: seriesPosts[idx + 1].data.title, slug: seriesPosts[idx + 1].id } : undefined,
+            },
+          },
+        });
+      }
+    } else {
+      for (const post of posts) {
+        paths.push({
+          params: { section, slug: post.id },
+          props: { post, section, seriesInfo: undefined },
+        });
+      }
+    }
+  }
+
+  return paths;
+}
+
+const { post, section, seriesInfo } = Astro.props;
+const meta = sectionMeta[section] ?? { label: section, description: '' };
+const { Content, headings } = await render(post);
+const body = post.body ?? '';
+const readTime = estimateReadTime(body);
+---
+<PostLayout
+  title={post.data.title}
+  date={post.data.date}
+  description={post.data.description}
+  section={section}
+  sectionLabel={meta.label}
+  tags={post.data.tags}
+  readTime={readTime}
+  headings={headings}
+  series={seriesInfo}
+>
+  <Content />
+</PostLayout>

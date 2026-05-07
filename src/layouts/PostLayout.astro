@@ -1,0 +1,97 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import SeriesNav from '../components/SeriesNav.astro';
+import { formatDate } from '../lib/utils';
+
+interface Props {
+  title: string;
+  date: Date;
+  description?: string;
+  section: string;
+  sectionLabel: string;
+  tags?: string[];
+  readTime?: number;
+  headings: { depth: number; slug: string; text: string }[];
+  series?: { name: string; order: number; total: number; prev?: { title: string; slug: string }; next?: { title: string; slug: string } };
+}
+
+const { title, date, description, section, sectionLabel, tags = [], readTime, headings, series } = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  <main class="flex-1 max-w-5xl mx-auto px-4 py-12 w-full">
+    {series && (
+      <SeriesNav
+        seriesName={series.name}
+        current={series.order}
+        total={series.total}
+        prev={series.prev}
+        next={series.next}
+        section="series"
+      />
+    )}
+
+    <div class="flex gap-12">
+      <article class="flex-1 min-w-0">
+        <header class="mb-8">
+          <div class="flex items-center gap-2 mb-3">
+            <a href={`/${section}`} class="text-xs font-medium text-accent bg-surface dark:bg-surface-dark px-2 py-0.5 rounded hover:bg-accent hover:text-cream transition-colors">
+              {sectionLabel}
+            </a>
+          </div>
+          <h1 class="font-serif text-3xl font-bold text-charcoal dark:text-warm-light leading-tight">
+            {title}
+          </h1>
+          <div class="mt-3 flex items-center gap-3 text-sm text-muted dark:text-muted-dark">
+            <time datetime={date.toISOString()}>{formatDate(date)}</time>
+            {readTime && <span>&middot; {readTime} min read</span>}
+          </div>
+        </header>
+
+        <div class="prose dark:text-warm-light">
+          <slot />
+        </div>
+
+        {tags.length > 0 && (
+          <div class="mt-8 pt-6 border-t border-border dark:border-border-dark flex flex-wrap gap-2">
+            {tags.map(tag => (
+              <span class="text-xs text-muted dark:text-muted-dark bg-surface dark:bg-surface-dark px-2 py-1 rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </article>
+
+      {headings.length > 0 && (
+        <aside class="hidden lg:block w-56 shrink-0">
+          <TableOfContents headings={headings} />
+        </aside>
+      )}
+    </div>
+
+    {headings.length > 0 && (
+      <div class="lg:hidden mt-8 pt-6 border-t border-border dark:border-border-dark">
+        <details class="group">
+          <summary class="text-sm font-medium text-muted dark:text-muted-dark cursor-pointer">Table of Contents</summary>
+          <div class="mt-2">
+            <TableOfContents headings={headings} />
+          </div>
+        </details>
+      </div>
+    )}
+
+    {series && (
+      <div class="mt-12">
+        <SeriesNav
+          seriesName={series.name}
+          current={series.order}
+          total={series.total}
+          prev={series.prev}
+          next={series.next}
+          section="series"
+        />
+      </div>
+    )}
+  </main>
+</BaseLayout>
