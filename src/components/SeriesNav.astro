@@ -13,20 +13,26 @@ const displayName = seriesName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUppe
 ---
 <nav class="bg-accent text-cream rounded-lg px-4 py-3" aria-label="Series navigation">
   <div class="flex items-center justify-between flex-wrap gap-2">
-    <div>
+    <div class="flex items-center gap-3">
       {prev ? (
-        <a href={`/${section}/${prev.slug}`} class="text-sm hover:underline" title={prev.title}>&larr; Prev</a>
+        <a href={`/${section}/${prev.slug}`} class="text-sm hover:underline" title={prev.title}>
+          &larr; Prev
+        </a>
       ) : (
         <span class="text-sm opacity-40">&larr; Prev</span>
       )}
     </div>
+
     <div class="text-center">
       <span class="font-serif font-semibold">{displayName}</span>
       <span class="text-sm opacity-80 ml-2">Part {current} of {total}</span>
     </div>
-    <div>
+
+    <div class="flex items-center gap-3">
       {next ? (
-        <a href={`/${section}/${next.slug}`} class="text-sm hover:underline" title={next.title}>Next &rarr;</a>
+        <a href={`/${section}/${next.slug}`} class="text-sm hover:underline" title={next.title}>
+          Next &rarr;
+        </a>
       ) : (
         <span class="text-sm opacity-40">Next &rarr;</span>
       )}

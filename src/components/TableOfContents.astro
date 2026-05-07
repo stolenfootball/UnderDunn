@@ -7,12 +7,22 @@ const { headings } = Astro.props;
 const filtered = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 ---
 {filtered.length > 0 && (
-  <nav aria-label="Table of contents">
-    <p class="text-xs font-medium uppercase tracking-wider text-muted dark:text-muted-dark mb-3">On this page</p>
-    <ul class="space-y-1.5 text-sm">
+  <nav class="sticky top-8" aria-label="Table of contents">
+    <p class="text-xs font-medium uppercase tracking-wider text-muted dark:text-muted-dark mb-3">
+      On this page
+    </p>
+    <ul class="space-y-1.5 text-sm border-l border-border dark:border-border-dark">
       {filtered.map(heading => (
         <li>
-          <a href={`#${heading.slug}`} class:list={['block text-muted dark:text-muted-dark hover:text-accent transition-colors', heading.depth === 3 ? 'pl-4' : '']}>
+          <a
+            href={`#${heading.slug}`}
+            class:list={[
+              'toc-link block transition-colors border-l-2 -ml-px',
+              heading.depth === 3 ? 'pl-6' : 'pl-3',
+              'border-transparent text-muted dark:text-muted-dark hover:text-charcoal dark:hover:text-warm-light hover:border-accent',
+            ]}
+            data-heading={heading.slug}
+          >
             {heading.text}
           </a>
         </li>
@@ -20,3 +30,34 @@ const filtered = headings.filter(h => h.depth >= 2 && h.depth <= 3);
     </ul>
   </nav>
 )}
+
+<script>
+  function initScrollSpy() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+    if (links.length === 0) return;
+
+    const headingIds = Array.from(links).map(l => l.dataset.heading!);
+    const headingEls = headingIds.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+
+    function update() {
+      let activeId = headingIds[0];
+      for (const el of headingEls) {
+        if (el.getBoundingClientRect().top <= 100) {
+          activeId = el.id;
+        }
+      }
+      links.forEach(link => {
+        const isActive = link.dataset.heading === activeId;
+        link.classList.toggle('border-accent', isActive);
+        link.classList.toggle('text-accent', isActive);
+        link.classList.toggle('border-transparent', !isActive);
+      });
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  initScrollSpy();
+  document.addEventListener('astro:after-swap', initScrollSpy);
+</script>
