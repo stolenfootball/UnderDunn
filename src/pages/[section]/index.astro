@@ -46,7 +46,7 @@ if (section === 'series') {
 
     {section === 'series' && seriesGroups ? (
       <div class="space-y-10">
-        {[...seriesGroups.entries()].map(([seriesName, { count, firstPost }]) => {
+        {[...seriesGroups.entries()].map(([seriesName, { count }]) => {
           const seriesPosts = posts!.filter(p => p.data.series === seriesName);
           const displayName = seriesName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
           return (
