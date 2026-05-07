@@ -37,8 +37,8 @@ if (section === 'series') {
   posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 ---
-<BaseLayout title={meta.label} description={meta.description}>
-  <main class="flex-1 max-w-3xl mx-auto px-4 py-12 w-full">
+<BaseLayout title={meta.label} description={meta.description} showSidebar>
+  <main class="flex-1 max-w-5xl mx-auto px-4 py-12 w-full">
     <div class="mb-8">
       <h1 class="font-serif text-3xl font-bold text-charcoal dark:text-warm-light">{meta.label}</h1>
       <p class="mt-2 text-muted dark:text-muted-dark">{meta.description}</p>

@@ -26,52 +26,53 @@ allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const featuredPost = allPosts.find(p => p.data.featured) ?? allPosts[0];
 const recentPosts = allPosts.filter(p => p.id !== featuredPost?.id).slice(0, 6);
 ---
-<BaseLayout title="Home" description="Security research, CTF writeups, and more.">
-  <main class="flex-1 max-w-3xl mx-auto px-4 py-12 w-full">
-    <section class="text-center mb-12">
-      <h1 class="font-serif text-4xl font-bold text-charcoal dark:text-warm-light">UnderDunn</h1>
-      <p class="mt-3 text-lg text-muted dark:text-muted-dark">Security research, CTF writeups, and more.</p>
-    </section>
-
-    {featuredPost && (
+<BaseLayout title="Home" description="Security research, CTF writeups, and more." showSidebar>
+  <main class="px-8 py-12 mx-auto max-w-6xl">
       <section class="mb-12">
-        <p class="text-xs font-medium uppercase tracking-wider text-accent mb-3">Featured</p>
-        <a
-          href={`/${featuredPost.section}/${featuredPost.id}`}
-          class="block p-6 rounded-lg border-2 border-accent bg-surface dark:bg-surface-dark hover:border-accent-hover transition-colors"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-xs font-medium text-accent">
-              {sectionMeta[featuredPost.section]?.label ?? featuredPost.section}
-            </span>
-          </div>
-          <h2 class="font-serif text-2xl font-bold text-charcoal dark:text-warm-light">
-            {featuredPost.data.title}
-          </h2>
-          {featuredPost.data.description && (
-            <p class="mt-2 text-muted dark:text-muted-dark">{featuredPost.data.description}</p>
-          )}
-        </a>
+        <h1 class="font-serif text-4xl font-bold text-charcoal dark:text-warm-light">UnderDunn</h1>
+        <p class="mt-3 text-lg text-muted dark:text-muted-dark">Security research, CTF writeups, and more.</p>
       </section>
-    )}
 
-    {recentPosts.length > 0 && (
-      <section>
-        <p class="text-xs font-medium uppercase tracking-wider text-muted dark:text-muted-dark mb-4">Latest</p>
-        <div class="space-y-1">
-          {recentPosts.map(post => (
-            <PostCard
-              title={post.data.title}
-              description={post.data.description}
-              date={post.data.date}
-              section={post.section}
-              sectionLabel={sectionMeta[post.section]?.label ?? post.section}
-              slug={post.id}
-              tags={post.data.tags}
-            />
-          ))}
-        </div>
-      </section>
-    )}
+      {featuredPost && (
+        <section class="mb-12">
+          <p class="text-xs font-medium uppercase tracking-wider text-accent mb-3">Featured</p>
+          <a
+            href={`/${featuredPost.section}/${featuredPost.id}`}
+            class="block p-6 rounded-lg border-2 border-accent bg-surface dark:bg-surface-dark hover:border-accent-hover transition-colors"
+          >
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs font-medium text-accent">
+                {sectionMeta[featuredPost.section]?.label ?? featuredPost.section}
+              </span>
+            </div>
+            <h2 class="font-serif text-2xl font-bold text-charcoal dark:text-warm-light">
+              {featuredPost.data.title}
+            </h2>
+            {featuredPost.data.description && (
+              <p class="mt-2 text-muted dark:text-muted-dark">{featuredPost.data.description}</p>
+            )}
+          </a>
+        </section>
+      )}
+
+      {recentPosts.length > 0 && (
+        <section>
+          <p class="text-xs font-medium uppercase tracking-wider text-muted dark:text-muted-dark mb-4">Latest</p>
+          <div class="space-y-4">
+            {recentPosts.map(post => (
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                section={post.section}
+                sectionLabel={sectionMeta[post.section]?.label ?? post.section}
+                slug={post.id}
+                tags={post.data.tags}
+              />
+            ))}
+          </div>
+        </section>
+      )}
   </main>
 </BaseLayout>
+

@@ -28,6 +28,7 @@ html {
 
 body {
   font-family: var(--font-sans);
+  font-size: 1.125rem;
   background-color: var(--color-cream);
   color: var(--color-charcoal);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -40,9 +41,9 @@ body {
 
 .prose {
   font-family: var(--font-serif);
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  max-width: 72ch;
+  font-size: 1.1875rem;
+  line-height: 1.75;
+  max-width: 90ch;
 }
 
 .prose h1,
@@ -64,7 +65,7 @@ body {
 }
 
 .prose h2 {
-  font-size: 1.5rem;
+  font-size: 1.625rem;
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.3em;
 }
@@ -74,7 +75,7 @@ body {
 }
 
 .prose h3 {
-  font-size: 1.25rem;
+  font-size: 1.375rem;
 }
 
 .prose p {
@@ -122,18 +123,28 @@ body {
 }
 
 .prose pre {
-  background-color: var(--color-code-bg) !important;
   border-radius: 0.5rem;
   padding: 1em;
   overflow-x: auto;
   margin: 1.5em 0;
-  font-size: 0.875rem;
+  font-size: 1.0625rem;
   line-height: 1.6;
 }
 
 .prose code {
   font-family: var(--font-mono);
   font-size: 0.875em;
+}
+
+.dark .astro-code {
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
 .prose :not(pre) > code {
@@ -148,4 +159,12 @@ body {
 
 .prose strong {
   font-weight: 700;
+}
+
+.dark .pagefind-ui {
+  --pagefind-ui-text: var(--color-warm-light);
+  --pagefind-ui-primary: var(--color-accent);
+  --pagefind-ui-background: var(--color-cream-dark);
+  --pagefind-ui-border: var(--color-border-dark);
+  --pagefind-ui-tag: var(--color-surface-dark);
 }

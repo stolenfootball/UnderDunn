@@ -19,7 +19,7 @@ interface Props {
 const { title, date, description, section, sectionLabel, tags = [], readTime, headings, series } = Astro.props;
 ---
 <BaseLayout title={title} description={description}>
-  <main class="flex-1 max-w-5xl mx-auto px-4 py-12 w-full">
+  <main class="flex-1 max-w-7xl mx-auto px-4 py-12 w-full">
     {series && (
       <SeriesNav
         seriesName={series.name}
