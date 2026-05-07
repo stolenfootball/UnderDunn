@@ -1,14 +1,9 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>UnderDunn</title>
-  </head>
-  <body>
-    <h1>UnderDunn</h1>
-  </body>
-</html>
+<BaseLayout title="Home">
+  <main class="flex-1 max-w-4xl mx-auto px-4 py-12">
+    <h1 class="font-serif text-3xl font-bold text-accent">UnderDunn</h1>
+    <p class="mt-4 text-muted">Blog coming together...</p>
+  </main>
+</BaseLayout>
