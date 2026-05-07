@@ -9,10 +9,12 @@
     "check": "astro check"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.9",
     "@astrojs/rss": "^4.0.18",
     "@tailwindcss/vite": "^4.2.4",
     "astro": "^6.3.1",
-    "tailwindcss": "^4.2.4"
+    "tailwindcss": "^4.2.4",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
     "pagefind": "^1.5.2"
